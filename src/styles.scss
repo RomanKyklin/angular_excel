@@ -1,1 +1,21 @@
-/* You can add global styles to this file, and also import other style files */
+.container {
+  max-width: 1920px;
+}
+
+.lightyellow-bg {
+  background: lightyellow;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cell {
+  padding: 0 !important;
+  border: 0 !important;
+
+  input {
+    width: 100%;
+    height: 50px;
+  }
+}
