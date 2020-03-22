@@ -18,7 +18,9 @@
         <tr *ngFor="let row of rows; let i = index">
           <th scope="row">{{row}}</th>
           <td *ngFor="let cell of cells[i]; let j = index" class="cursor-pointer cell">
-            <input (keyup)="onKeyUp($event, cell, input.value)" #input [(ngModel)]="cell.text">
+            <input (keyup)="onKeyUp($event, cell, input.value)" #input [(ngModel)]="cell.text"
+                   (focus)="onFocus($event, cell, input.value)"
+                   (focusout)="onFocusOut($event, cell, input.value)">
           </td>
         </tr>
         </tbody>

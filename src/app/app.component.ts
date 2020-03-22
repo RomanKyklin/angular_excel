@@ -4,6 +4,7 @@ export interface Cell {
   x: string;
   y: number;
   text: string;
+  formula?: string;
 }
 
 @Component({
@@ -60,8 +61,18 @@ export class AppComponent implements OnInit {
 
   onKeyUp($event, cell: Cell, text: string) {
     if (this.isEnterTouched($event)) {
+      cell.formula = text;
       cell.text = this.parseCellText(text) as string;
     }
+  }
+
+  onFocus($event, cell: Cell, text: string) {
+    cell.text = cell.formula;
+  }
+
+  onFocusOut($event, cell: Cell, text: string) {
+    cell.formula = text;
+    cell.text = this.parseCellText(text) as string;
   }
 
   private isEnterTouched($event: KeyboardEvent) {
