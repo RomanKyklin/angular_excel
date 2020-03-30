@@ -1,3 +1,5 @@
+@import "variables";
+
 .container {
   max-width: 1920px;
 }
@@ -17,5 +19,14 @@
   input {
     width: 100%;
     height: 50px;
+    border: 1px solid $color-grey;
   }
+}
+
+.mw-60 {
+  min-width: 60px;
+}
+
+.text-center {
+  text-align: center;
 }

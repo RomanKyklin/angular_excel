@@ -1,1 +1,4 @@
-
+<input #input
+       (focus)="onFocus($event, input.value)"
+       (focusout)="onFocusOut($event, input.value)"
+       [(ngModel)]="cell.text">

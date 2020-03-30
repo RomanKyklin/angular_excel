@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {CellEvent} from './components/cell/cell.component';
 
 export interface Cell {
   x: string;
@@ -13,11 +14,12 @@ export interface Cell {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  public readonly TABLE_WIDTH = 26;
-  public readonly TABLE_HEIGHT = 26;
+  public readonly TABLE_WIDTH = 100;
+  public readonly TABLE_HEIGHT = 1000;
   public headerCells: string[] = [];
   public rows: number[] = [];
   public cells = [];
+  private readonly recursiveCellErrorText = 'Recursive cell!';
 
   ngOnInit(): void {
     this.headerCells = this.getHeaderCells(this.TABLE_WIDTH);
@@ -29,13 +31,7 @@ export class AppComponent implements OnInit {
   }
 
   public getHeaderCells(width: number): string[] {
-    const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-      'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-    const result: string[] = [];
-    for (let i = 0; i < width; i++) {
-      result.push(alphabet[i]);
-    }
-    return result;
+    return this.columnNames(width);
   }
 
   public getRows(height: number) {
@@ -59,33 +55,28 @@ export class AppComponent implements OnInit {
     return result;
   }
 
-  onKeyUp($event, cell: Cell, text: string) {
-    if (this.isEnterTouched($event)) {
-      cell.formula = text;
-      cell.text = this.parseCellText(text) as string;
-    }
-  }
-
-  onFocus($event, cell: Cell, text: string) {
+  onFocus($event: CellEvent) {
+    const {cell} = $event;
     cell.text = cell.formula;
   }
 
-  onFocusOut($event, cell: Cell, text: string) {
+  onFocusOut($event: CellEvent) {
+    const {cell, text} = $event;
     cell.formula = text;
-    cell.text = this.parseCellText(text) as string;
+    cell.text = this.parseCellText(cell, text) as string;
   }
 
-  private isEnterTouched($event: KeyboardEvent) {
-    return $event.key === 'Enter' && $event.code === 'Enter';
-  }
-
-  private parseCellText(text: string): number | string {
+  private parseCellText(cell: Cell, text: string): number | string {
     if (this.isCellsOperation(text)) {
-      return this.parsePlusSeparatedExpression(this.parseCells(text));
+      return this.isCellRecursive(cell, text) ? this.recursiveCellErrorText : this.parsePlusSeparatedExpression(this.parseCells(text));
     } else if (this.isNumericOperation(text)) {
       return this.parsePlusSeparatedExpression(text);
     }
     return text;
+  }
+
+  private isCellRecursive(cell: Cell, text: string): boolean {
+    return text.toLowerCase().search(`${cell.x}${cell.y}`.toLowerCase()) !== -1;
   }
 
   private parseCells(text: string): string {
@@ -172,4 +163,36 @@ export class AppComponent implements OnInit {
   }
 
   private isNumeric = (num: any) => (typeof (num) === 'number' || typeof (num) === 'string' && num.trim() !== '') && !isNaN(num as number);
+
+  private columnNames(n) {
+    const result = [];
+
+    const indexA = 'A'.charCodeAt(0);
+    const indexZ = 'Z'.charCodeAt(0);
+
+    let alphabetLength = indexZ - indexA + 1;
+    const repeatNum = Math.floor(n / alphabetLength);
+
+    let startIndex = 0;
+    let startString = '';
+    let str = '';
+
+    while (startIndex <= repeatNum) {
+      if (startIndex > 0) {
+        startString = String.fromCharCode(indexA + startIndex - 1);
+      }
+
+      if (startIndex === repeatNum) {
+        alphabetLength = n % alphabetLength;
+      }
+
+      for (let i = 0; i < alphabetLength; i++) {
+        str = String.fromCharCode(indexA + i);
+
+        result.push(startString + str);
+      }
+      startIndex++;
+    }
+    return result;
+  }
 }

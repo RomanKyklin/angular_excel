@@ -4,23 +4,22 @@
       <h1>Angular excel</h1>
     </div>
   </div>
-
   <div class="row">
     <div class="col-md-12">
       <table class="table table-bordered">
         <thead>
         <tr>
           <th></th>
-          <th scope="col" *ngFor="let cell of headerCells">{{cell}}</th>
+          <th scope="col" class="mw-60 text-center" *ngFor="let cell of headerCells">{{cell}}</th>
         </tr>
         </thead>
         <tbody>
         <tr *ngFor="let row of rows; let i = index">
           <th scope="row">{{row}}</th>
           <td *ngFor="let cell of cells[i]; let j = index" class="cursor-pointer cell">
-            <input (keyup)="onKeyUp($event, cell, input.value)" #input [(ngModel)]="cell.text"
-                   (focus)="onFocus($event, cell, input.value)"
-                   (focusout)="onFocusOut($event, cell, input.value)">
+            <app-cell [cell]="cell"
+                      (focusOutEventEmitted)="onFocusOut($event)"
+                      (focusEventEmitted)="onFocus($event)"></app-cell>
           </td>
         </tr>
         </tbody>
