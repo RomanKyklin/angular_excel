@@ -1,5 +1,6 @@
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {Cell} from '../../app.component';
+import {CellService} from '../../services/cell.service';
 
 export interface CellEvent {
   $event: any;
@@ -13,12 +14,10 @@ export interface CellEvent {
   styleUrls: ['./cell.component.scss']
 })
 export class CellComponent implements OnInit {
-  constructor() {
+  constructor(private cellService: CellService) {
   }
 
   @Input() cell: Cell;
-  @Output() focusEventEmitted: EventEmitter<CellEvent> = new EventEmitter<CellEvent>();
-  @Output() focusOutEventEmitted: EventEmitter<CellEvent> = new EventEmitter<CellEvent>();
   @ViewChild('inputElement', null) inputElement: ElementRef;
   isInputVisible = false;
 
@@ -26,19 +25,21 @@ export class CellComponent implements OnInit {
   }
 
   onFocus($event, text: string) {
-    this.focusEventEmitted.emit({
+    const cellEvent: CellEvent = {
       $event,
       cell: this.cell,
-      text
-    });
+      text,
+    };
+    this.cellService.onFocus(cellEvent);
   }
 
   onFocusOut($event, text: string) {
-    this.focusOutEventEmitted.emit({
+    const cellEvent: CellEvent = {
       $event,
       cell: this.cell,
-      text
-    });
+      text,
+    };
+    this.cellService.onFocusOut(cellEvent);
     this.isInputVisible = false;
   }
 

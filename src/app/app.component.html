@@ -10,16 +10,17 @@
         <thead>
         <tr>
           <th></th>
-          <th scope="col" class="mw-60 text-center" *ngFor="let cell of headerCells">{{cell}}</th>
+          <th scope="col" class="mw-60 text-center" *ngFor="let cell of cellService.headerCells; trackBy: trackByFn">
+            {{cell}}
+          </th>
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let row of rows; let i = index">
+        <tr *ngFor="let row of cellService.rows; let i = index; trackBy: trackByFn">
           <th scope="row">{{row}}</th>
-          <td *ngFor="let cell of cells[i]; let j = index" class="cursor-pointer cell">
-            <app-cell [cell]="cell"
-                      (focusOutEventEmitted)="onFocusOut($event)"
-                      (focusEventEmitted)="onFocus($event)"></app-cell>
+          <td *ngFor="let cell of cellService.cells[i]; trackBy: trackByCellsFn"
+              class="cursor-pointer cell">
+            <app-cell [cell]="cell"></app-cell>
           </td>
         </tr>
         </tbody>
