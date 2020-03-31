@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {Cell} from '../../app.component';
 
 export interface CellEvent {
@@ -19,6 +19,8 @@ export class CellComponent implements OnInit {
   @Input() cell: Cell;
   @Output() focusEventEmitted: EventEmitter<CellEvent> = new EventEmitter<CellEvent>();
   @Output() focusOutEventEmitted: EventEmitter<CellEvent> = new EventEmitter<CellEvent>();
+  @ViewChild('inputElement', null) inputElement: ElementRef;
+  isInputVisible = false;
 
   ngOnInit() {
   }
@@ -37,5 +39,13 @@ export class CellComponent implements OnInit {
       cell: this.cell,
       text
     });
+    this.isInputVisible = false;
+  }
+
+  setFocus() {
+    this.isInputVisible = true;
+    setTimeout(() => { // this will make the execution after the above boolean has changed
+      this.inputElement.nativeElement.focus();
+    }, 0);
   }
 }

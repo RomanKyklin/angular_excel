@@ -62,8 +62,10 @@ export class AppComponent implements OnInit {
 
   onFocusOut($event: CellEvent) {
     const {cell, text} = $event;
-    cell.formula = text;
-    cell.text = this.parseCellText(cell, text) as string;
+    if (text) {
+      cell.formula = text;
+      cell.text = this.parseCellText(cell, text) as string;
+    }
   }
 
   private parseCellText(cell: Cell, text: string): number | string {
