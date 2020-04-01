@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ChangeDetectionStrategy, ElementRef,ChangeDetectorRef, EventEmitter, Input, OnInit, Output, ViewChild, AfterViewInit} from '@angular/core';
 import {Cell} from '../../app.component';
 import {CellService} from '../../services/cell.service';
 
@@ -9,19 +9,19 @@ export interface CellEvent {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-cell',
   templateUrl: './cell.component.html',
   styleUrls: ['./cell.component.scss']
 })
-export class CellComponent implements OnInit {
-  constructor(private cellService: CellService) {
+export class CellComponent implements AfterViewInit {
+  @Input() cell: Cell;
+  @ViewChild('container', { static: true }) container: ElementRef;
+  constructor(private cellService: CellService, private cd:ChangeDetectorRef) {
   }
 
-  @Input() cell: Cell;
-  @ViewChild('inputElement', null) inputElement: ElementRef;
-  isInputVisible = false;
-
-  ngOnInit() {
+  ngAfterViewInit() {
+    this.cd.detach()
   }
 
   onFocus($event, text: string) {
@@ -34,19 +34,18 @@ export class CellComponent implements OnInit {
   }
 
   onFocusOut($event, text: string) {
-    const cellEvent: CellEvent = {
-      $event,
-      cell: this.cell,
-      text,
-    };
-    this.cellService.onFocusOut(cellEvent);
-    this.isInputVisible = false;
+    // const cellEvent: CellEvent = {
+    //   $event,
+    //   cell: this.cell,
+    //   text,
+    // };
+    // this.cellService.onFocusOut(cellEvent);
+    // this.isInputVisible = false;
   }
 
   setFocus() {
-    this.isInputVisible = true;
-    setTimeout(() => { // this will make the execution after the above boolean has changed
-      this.inputElement.nativeElement.focus();
-    }, 0);
+    this.cellService.input.remove();
+    this.container.nativeElement.appendChild(this.cellService.input);
+    this.cellService.input.focus();
   }
 }

@@ -12,7 +12,7 @@ export class CellService {
   public headerCells: string[] = [];
   public rows: number[] = [];
   public cells = [];
-
+  public input: any = document.createElement('input');
   constructor() {
     this.headerCells = this.getHeaderCells(this.TABLE_WIDTH);
     this.rows = this.getRows(this.TABLE_HEIGHT);
